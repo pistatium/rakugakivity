@@ -1,6 +1,5 @@
 import argparse
-
-from typing import NamedTuple, List
+from typing import NamedTuple, Generator
 from datetime import datetime
 
 from twitter_scraper import get_tweets
@@ -31,25 +30,17 @@ class UserTweets():
     def __init__(self, username):
         self.username = username
 
-    def fetch_all(self) -> List[Tweet]:
-        page = 1
-
-        while True:
-            try:
-                tweets = get_tweets(self.username, pages=page)
-                for tweet in tweets:
-                    if tweet['isRetweet']:
-                        continue
-                    tw = Tweet.from_dict(tweet)
-                    if tw.images:
-                        yield tw
-                page += 1
-            except Exception as e:
-                print(e)
-                break
+    def fetch_all(self, max_page: int = 25) -> Generator[Tweet]:
+        tweets = get_tweets(self.username, pages=max_page)
+        for tweet in tweets:
+            if tweet['isRetweet']:
+                continue
+            tw = Tweet.from_dict(tweet)
+            if tw.images:
+                yield tw
 
 
-def format_as_csv(tweets: List[Tweet]) -> str:
+def format_as_csv(tw: Tweet) -> str:
     return f'{tw.created_at.isoformat()}, {tw.likes}, {tw.retweets}, {tw.images[0]}'
 
 
