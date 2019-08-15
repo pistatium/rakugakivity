@@ -1,1 +1,1 @@
-twitter-scraper
+git+https://github.com/bisguzar/twitter-scraper
