@@ -1,5 +1,5 @@
 import argparse
-from typing import NamedTuple, Generator
+from typing import NamedTuple, Iterator
 from datetime import datetime
 
 from twitter_scraper import get_tweets
@@ -30,7 +30,7 @@ class UserTweets():
     def __init__(self, username):
         self.username = username
 
-    def fetch_all(self, max_page: int = 25) -> Generator[Tweet]:
+    def fetch_all(self, max_page: int = 25) -> Iterator[Tweet]:
         tweets = get_tweets(self.username, pages=max_page)
         for tweet in tweets:
             if tweet['isRetweet']:
